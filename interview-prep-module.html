@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Interview prep room</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --ink:#1B2540;
+  --ink-soft:#333F5C;
+  --paper:#EDF1F5;
+  --card:#FFFFFF;
+  --gold:#E8A33D;
+  --gold-dark:#96631A;
+  --teal:#2F8F7B;
+  --teal-dark:#1C5A4C;
+  --rose:#C9526B;
+  --rose-dark:#8E3349;
+  --line:#D7DDE5;
+  --muted:#6B7686;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:'IBM Plex Sans',sans-serif;color:var(--ink);}
+.wrap{max-width:760px;margin:0 auto;padding:40px 24px 64px;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dark);margin:0 0 6px;}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:32px;margin:0 0 4px;line-height:1.15;}
+.sub{color:var(--muted);font-size:14px;margin:0 0 28px;}
+.stepper{display:flex;gap:0;margin-bottom:32px;border-bottom:1px solid var(--line);}
+.step{flex:1;padding:0 0 12px;position:relative;font-size:13px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
+.step b{color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:14px;display:block;margin-top:2px;}
+.step::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:transparent;}
+.step.active::after{background:var(--gold);}
+.step.done::after{background:var(--teal);}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px;margin-bottom:20px;}
+label{display:block;font-size:13px;font-weight:500;color:var(--ink-soft);margin-bottom:8px;}
+select,textarea{width:100%;font-family:'IBM Plex Sans',sans-serif;font-size:15px;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);}
+select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;}
+textarea{resize:vertical;min-height:120px;line-height:1.5;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+button{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:14px;padding:11px 20px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;}
+button:hover{background:var(--ink-soft);}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+button.ghost:hover{background:var(--paper);}
+button:disabled{opacity:.5;cursor:default;}
+.prep-panel{border-top:2px solid var(--gold);padding-top:16px;margin-top:4px;}
+.prep-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin:0 0 12px;}
+.rounds{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.round{display:flex;gap:12px;align-items:baseline;font-size:14px;}
+.round .n{font-family:'IBM Plex Mono',monospace;color:var(--gold-dark);font-size:12px;width:20px;flex-shrink:0;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.tag{font-size:12px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:20px;background:var(--paper);border:1px solid var(--line);color:var(--ink-soft);}
+.sample-q{font-size:13px;color:var(--muted);margin:3px 0;}
+.qtype{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:4px;margin-bottom:10px;}
+.qtype.HR{background:#EEF1F6;color:var(--ink-soft);}
+.qtype.Technical{background:#E1F0EC;color:var(--teal-dark);}
+.qtype.DSA{background:#FBEFDD;color:var(--gold-dark);}
+.qtype.Project{background:#F6E7EB;color:var(--rose-dark);}
+.qtext{font-family:'Fraunces',serif;font-size:20px;font-weight:500;line-height:1.35;margin:0 0 18px;}
+.progress-line{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.feedback{border-left:3px solid var(--teal);padding:14px 16px;background:#F5FAF8;border-radius:0 8px 8px 0;margin-top:16px;}
+.feedback.low{border-left-color:var(--rose);background:#FBF3F5;}
+.feedback-score{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;margin-bottom:6px;}
+.feedback-text{font-size:14px;line-height:1.55;margin:0 0 10px;color:var(--ink-soft);}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{font-size:12px;padding:3px 10px;border-radius:20px;}
+.chip.pos{background:#E1F0EC;color:var(--teal-dark);}
+.chip.neg{background:#F6E7EB;color:var(--rose-dark);}
+.loading{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;padding:18px 0;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.1s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:.15s;}
+.dot:nth-child(3){animation-delay:.3s;}
+@keyframes pulse{0%,80%,100%{opacity:.25;}40%{opacity:1;}}
+.stamp{width:120px;height:120px;border-radius:50%;border:3px solid var(--teal);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-4deg);margin:0 auto 20px;background:#F5FAF8;}
+.stamp.low{border-color:var(--rose);background:#FBF3F5;}
+.stamp .num{font-family:'IBM Plex Mono',monospace;font-size:30px;font-weight:500;color:var(--teal-dark);line-height:1;}
+.stamp.low .num{color:var(--rose-dark);}
+.stamp .lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal-dark);margin-top:2px;}
+.stamp.low .lbl{color:var(--rose-dark);}
+.report-section{margin-bottom:20px;}
+.report-section h3{font-family:'Fraunces',serif;font-size:16px;font-weight:600;margin:0 0 10px;}
+.report-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;}
+.report-list li{font-size:14px;padding-left:20px;position:relative;line-height:1.5;}
+.report-list.strength li::before{content:'\2713';position:absolute;left:0;color:var(--teal);font-weight:500;}
+.report-list.weak li::before{content:'\2717';position:absolute;left:0;color:var(--rose);font-weight:500;}
+.report-list.topic li::before{content:'\2022';position:absolute;left:2px;color:var(--gold-dark);}
+.err{background:#FBF3F5;border:1px solid var(--rose);color:var(--rose-dark);padding:14px 16px;border-radius:8px;font-size:14px;margin-bottom:16px;}
+.foot-actions{display:flex;gap:10px;margin-top:8px;}
+.qa-review{border-top:1px solid var(--line);padding-top:14px;margin-top:20px;}
+.qa-item{margin-bottom:14px;font-size:13px;}
+.qa-item .q{color:var(--ink-soft);font-weight:500;margin-bottom:3px;}
+.qa-item .s{font-family:'IBM Plex Mono',monospace;color:var(--muted);}
+.api-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.api-row label{margin:0;white-space:nowrap;}
+.api-row input{flex:1;font-family:'IBM Plex Mono',monospace;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);}
+.api-row input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+
+<script>
+const COMPANIES = {
+  Google: {
+    rounds: [["Online assessment","coding + basic reasoning"],["Technical interview","DSA and problem solving"],["Googleyness & leadership","values and collaboration"]],
+    topics: ["Arrays","Graphs","Dynamic programming","System design basics"],
+    samples: ["Two Sum","Design a URL shortener","Tell me about a time you disagreed with a teammate."]
+  },
+  Microsoft: {
+    rounds: [["Online assessment","coding round"],["Technical interview(s)","DSA and OOP"],["HR / behavioral","culture fit"]],
+    topics: ["Trees","Linked lists","OOP concepts","System design"],
+    samples: ["Reverse a linked list","Explain SOLID principles","Why Microsoft?"]
+  },
+  Amazon: {
+    rounds: [["Online assessment","coding round"],["Technical interview","DSA deep dive"],["Leadership principles","behavioral"]],
+    topics: ["Arrays","Trees","Graphs","Dynamic programming"],
+    samples: ["Two Sum","LRU Cache","Tell me about yourself."]
+  },
+  TCS: {
+    rounds: [["Aptitude test","quant and reasoning"],["Technical interview","fundamentals"],["HR interview","fit and communication"]],
+    topics: ["SQL basics","OOP concepts","Aptitude and reasoning","Communication"],
+    samples: ["What is normalization in DBMS?","Explain OOP concepts.","Why should we hire you?"]
+  },
+  Infosys: {
+    rounds: [["Online test","aptitude + coding"],["Technical interview","fundamentals"],["HR interview","fit and communication"]],
+    topics: ["Basic DSA","DBMS","Java fundamentals","Aptitude"],
+    samples: ["What is a primary key?","Explain inheritance in Java.","Where do you see yourself in 5 years?"]
+  },
+  Accenture: {
+    rounds: [["Cognitive & coding assessment","aptitude + coding"],["Technical interview","fundamentals + resume"],["HR interview","fit and communication"]],
+    topics: ["Communication","Basic programming","Aptitude","Resume-based questions"],
+    samples: ["Walk me through your resume.","Explain a project you're proud of.","What is OOP?"]
+  }
+};
+const ROLES = ["Software Engineer","Frontend Developer","Backend Developer","Data Analyst","AI Engineer"];
+
+let state = {
+  screen: 'setup',
+  apiBase: 'http://127.0.0.1:8000',
+  company: '',
+  role: '',
+  sessionId: '',
+  questions: [],
+  answers: [],
+  current: 0,
+  draft: '',
+  report: null,
+  error: ''
+};
+
+async function apiCall(path, options){
+  let res;
+  try{
+    res = await fetch(state.apiBase + path, {
+      headers: {"Content-Type":"application/json"},
+      ...options
+    });
+  }catch(err){
+    throw new Error("Can't reach the backend at " + state.apiBase + ". Make sure `uvicorn backend.interview:app --reload` is running.");
+  }
+  if(!res.ok){
+    let detail = "";
+    try{ detail = (await res.json()).detail || ""; }catch(e){}
+    throw new Error(detail || ("Backend returned " + res.status));
+  }
+  return res.json();
+}
+
+function stepClass(n){
+  const order = {setup:0, interview:1, report:2};
+  const cur = order[state.screen==='loadingQuestions'?'setup':state.screen==='loadingReport'?'interview':state.screen];
+  if(n < cur) return 'step done';
+  if(n === cur) return 'step active';
+  return 'step';
+}
+
+function render(){
+  const root = document.getElementById('root');
+  root.innerHTML = `
+    <p class="eyebrow">Interview prep room</p>
+    <h1>${state.company && state.role ? state.company + ' &middot; ' + state.role : 'Mock interview & company preparation'}</h1>
+    <p class="sub">Practice real interview questions and get instant, honest feedback.</p>
+    <div class="stepper">
+      <div class="${stepClass(0)}"><span>01</span><b>Setup</b></div>
+      <div class="${stepClass(1)}"><span>02</span><b>Interview</b></div>
+      <div class="${stepClass(2)}"><span>03</span><b>Report</b></div>
+    </div>
+    <div id="body"></div>
+  `;
+  const body = document.getElementById('body');
+  if(state.error){
+    const e = document.createElement('div');
+    e.className = 'err';
+    e.textContent = state.error;
+    body.appendChild(e);
+  }
+  if(state.screen === 'setup') renderSetup(body);
+  else if(state.screen === 'loadingQuestions') renderLoading(body, "Generating your interview questions");
+  else if(state.screen === 'interview') renderInterview(body);
+  else if(state.screen === 'loadingReport') renderLoading(body, "Putting together your report");
+  else if(state.screen === 'report') renderReport(body);
+}
+
+function renderLoading(body, msg){
+  const d = document.createElement('div');
+  d.className = 'card loading';
+  d.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span> ${msg}&hellip;`;
+  body.appendChild(d);
+}
+
+function renderSetup(body){
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="api-row">
+      <label for="apiBaseInput">Backend URL</label>
+      <input id="apiBaseInput" type="text" value="${state.apiBase}">
+    </div>
+    <div class="row">
+      <div>
+        <label for="companySel">Company</label>
+        <select id="companySel">
+          <option value="">Select a company</option>
+          ${Object.keys(COMPANIES).map(c=>`<option value="${c}" ${state.company===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label for="roleSel">Job role</label>
+        <select id="roleSel">
+          <option value="">Select a role</option>
+          ${ROLES.map(r=>`<option value="${r}" ${state.role===r?'selected':''}>${r}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div id="prepSlot"></div>
+    <button id="startBtn" ${(!state.company||!state.role)?'disabled':''}>Start interview</button>
+  `;
+  body.appendChild(card);
+  document.getElementById('apiBaseInput').onchange = e => { state.apiBase = e.target.value.replace(/\/$/,''); };
+  document.getElementById('companySel').onchange = e => { state.company = e.target.value; render(); };
+  document.getElementById('roleSel').onchange = e => { state.role = e.target.value; render(); };
+  document.getElementById('startBtn').onclick = startInterview;
+
+  const prepSlot = document.getElementById('prepSlot');
+  if(state.company){
+    const d = COMPANIES[state.company];
+    const div = document.createElement('div');
+    div.className = 'prep-panel';
+    div.innerHTML = `
+      <p class="prep-title">${state.company} interview pattern</p>
+      <div class="rounds">
+        ${d.rounds.map((r,i)=>`<div class="round"><span class="n">0${i+1}</span><span><b>${r[0]}</b> &mdash; ${r[1]}</span></div>`).join('')}
+      </div>
+      <div class="tags">${d.topics.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      ${d.samples.map(s=>`<p class="sample-q">&bull; ${s}</p>`).join('')}
+    `;
+    prepSlot.appendChild(div);
+  }
+}
+
+async function startInterview(){
+  state.error = '';
+  state.screen = 'loadingQuestions';
+  render();
+  try{
+    const result = await apiCall('/start-interview', {
+      method: 'POST',
+      body: JSON.stringify({ company: state.company, role: state.role })
+    });
+    if(!Array.isArray(result.questions) || result.questions.length === 0) throw new Error("bad format");
+    state.sessionId = result.session_id;
+    state.questions = result.questions;
+    state.answers = result.questions.map(()=>null);
+    state.current = 0;
+    state.draft = '';
+    state.screen = 'interview';
+  }catch(err){
+    state.error = err.message || "Couldn't generate questions. Try starting the interview again.";
+    state.screen = 'setup';
+  }
+  render();
+}
+
+function renderInterview(body){
+  const q = state.questions[state.current];
+  const answered = state.answers[state.current];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <p class="progress-line">Question ${state.current+1} of ${state.questions.length}</p>
+    <span class="qtype ${q.type}">${q.type}</span>
+    <p class="qtext">${q.question}</p>
+    <label for="answerBox">Your answer</label>
+    <textarea id="answerBox" placeholder="Type your answer as you would say it out loud." ${answered?'disabled':''}>${answered ? answered.answer : state.draft}</textarea>
+    <div class="foot-actions" style="margin-top:14px;">
+      ${answered ? '' : `<button id="submitBtn">Submit answer</button>`}
+    </div>
+    <div id="fbSlot"></div>
+  `;
+  body.appendChild(card);
+
+  if(!answered){
+    const box = document.getElementById('answerBox');
+    box.oninput = e => { state.draft = e.target.value; };
+    document.getElementById('submitBtn').onclick = submitAnswer;
+  } else {
+    const fbSlot = document.getElementById('fbSlot');
+    const low = answered.score < 6;
+    const fb = document.createElement('div');
+    fb.className = 'feedback' + (low ? ' low' : '');
+    fb.innerHTML = `
+      <p class="feedback-score">Score &middot; ${answered.score}/10</p>
+      <p class="feedback-text">${answered.feedback}</p>
+      <div class="chip-row">
+        ${answered.strength ? `<span class="chip pos">${answered.strength}</span>` : ''}
+        ${answered.weakness ? `<span class="chip neg">${answered.weakness}</span>` : ''}
+      </div>
+    `;
+    fbSlot.appendChild(fb);
+
+    const nextWrap = document.createElement('div');
+    nextWrap.className = 'foot-actions';
+    nextWrap.style.marginTop = '16px';
+    if(state.current < state.questions.length - 1){
+      nextWrap.innerHTML = `<button id="nextBtn">Next question</button>`;
+      fbSlot.appendChild(nextWrap);
+      document.getElementById('nextBtn').onclick = () => {
+        state.current += 1;
+        state.draft = '';
+        render();
+      };
+    } else {
+      nextWrap.innerHTML = `<button id="finishBtn">See final report</button>`;
+      fbSlot.appendChild(nextWrap);
+      document.getElementById('finishBtn').onclick = finishInterview;
+    }
+  }
+}
+
+async function submitAnswer(){
+  const box = document.getElementById('answerBox');
+  const answer = box.value.trim();
+  if(!answer){
+    state.error = "Write an answer before submitting.";
+    render();
+    return;
+  }
+  state.error = '';
+  const q = state.questions[state.current];
+  const savedAnswer = answer;
+  const body = document.getElementById('body');
+  body.innerHTML = '';
+  renderLoading(body, "Reviewing your answer");
+
+  try{
+    const result = await apiCall('/submit-answer', {
+      method: 'POST',
+      body: JSON.stringify({
+        session_id: state.sessionId,
+        question: q.question,
+        answer: savedAnswer
+      })
+    });
+    state.answers[state.current] = {
+      answer: savedAnswer,
+      score: Math.max(0, Math.min(10, Math.round(result.score))),
+      feedback: result.feedback || "",
+      strength: result.strength || "",
+      weakness: result.weakness || ""
+    };
+  }catch(err){
+    state.error = err.message || "Couldn't get feedback for that answer.";
+    state.answers[state.current] = {
+      answer: savedAnswer,
+      score: 5,
+      feedback: "Feedback couldn't be generated for this answer, but it's saved. Move on to the next question.",
+      strength: "",
+      weakness: ""
+    };
+  }
+  render();
+}
+
+async function finishInterview(){
+  state.error = '';
+  state.screen = 'loadingReport';
+  render();
+  try{
+    const result = await apiCall('/interview-report/' + state.sessionId, { method: 'GET' });
+    state.report = {
+      overallScore: result.overallScore,
+      strengths: result.strengths || [],
+      weaknesses: result.weaknesses || [],
+      recommendations: result.recommendations || []
+    };
+  }catch(err){
+    const avg = state.answers.reduce((s,a)=>s+a.score,0) / state.answers.length;
+    state.error = err.message || "Couldn't generate the final report.";
+    state.report = {
+      overallScore: Math.round(avg * 10),
+      strengths: state.answers.filter(a=>a.strength).map(a=>a.strength),
+      weaknesses: state.answers.filter(a=>a.weakness).map(a=>a.weakness),
+      recommendations: COMPANIES[state.company] ? COMPANIES[state.company].topics : []
+    };
+  }
+  state.screen = 'report';
+  render();
+}
+
+function renderReport(body){
+  const r = state.report;
+  const low = r.overallScore < 60;
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="stamp ${low?'low':''}">
+      <span class="num">${r.overallScore}</span>
+      <span class="lbl">out of 100</span>
+    </div>
+    <div class="report-section">
+      <h3>Strengths</h3>
+      <ul class="report-list strength">${r.strengths.map(s=>`<li>${s}</li>`).join('') || '<li>Keep practicing to build a track record here.</li>'}</ul>
+    </div>
+    <div class="report-section">
+      <h3>Weaknesses</h3>
+      <ul class="report-list weak">${r.weaknesses.map(s=>`<li>${s}</li>`).join('') || '<li>No major gaps flagged this round.</li>'}</ul>
+    </div>
+    <div class="report-section">
+      <h3>Recommended topics to review</h3>
+      <ul class="report-list topic">${r.recommendations.map(s=>`<li>${s}</li>`).join('')}</ul>
+    </div>
+    <div class="qa-review">
+      <h3 style="font-family:'Fraunces',serif;font-size:16px;font-weight:600;margin:0 0 10px;">Answer by answer</h3>
+      ${state.questions.map((q,i)=>`
+        <div class="qa-item">
+          <p class="q">${q.question}</p>
+          <p class="s">${state.answers[i].score}/10 &mdash; ${state.answers[i].feedback}</p>
+        </div>
+      `).join('')}
+    </div>
+    <div class="foot-actions">
+      <button class="ghost" id="restartBtn">Start a new mock interview</button>
+    </div>
+  `;
+  body.appendChild(card);
+  document.getElementById('restartBtn').onclick = () => {
+    const keepApiBase = state.apiBase;
+    state = {screen:'setup', apiBase: keepApiBase, company:'', role:'', sessionId:'', questions:[], answers:[], current:0, draft:'', report:null, error:''};
+    render();
+  };
+}
+
+render();
+</script>
+</body>
+</html>
