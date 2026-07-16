@@ -1,4 +1,4 @@
-# Interview prep module — backend
+# Interview prep module — backend:
 
 FastAPI + MongoDB + Gemini implementation of the Mock Interview & Company
 Preparation module, matching the API shapes from the spec (with `session_id`
@@ -18,13 +18,13 @@ interview-module/
 └── README.md
 ```
 
-## 1. Prerequisites
+## 1. Prerequisites:
 
 - Python 3.10+
 - MongoDB running locally (`mongod`), or a connection string to MongoDB Atlas
 - A Gemini API key — free tier at https://aistudio.google.com/apikey
 
-## 2. Setup
+## 2. Setup:
 
 ```bash
 cd interview-module
@@ -38,7 +38,7 @@ cp .env.example .env
 # and your MONGO_URI if not running Mongo locally on the default port
 ```
 
-## 3. Run
+## 3. Run:
 
 Make sure MongoDB is running (`mongod` in a separate terminal if local), then:
 
@@ -50,7 +50,7 @@ The API is now at `http://127.0.0.1:8000`. Interactive docs (Swagger UI) are
 at `http://127.0.0.1:8000/docs` — the easiest way to try every endpoint
 without writing curl commands.
 
-## 4. Endpoints
+## 4. Endpoints:
 
 ### `POST /start-interview`
 
@@ -58,7 +58,7 @@ without writing curl commands.
 { "company": "Amazon", "role": "Software Engineer" }
 ```
 
-Returns:
+Returns:-
 
 ```json
 {
@@ -108,7 +108,7 @@ Call this only after at least one answer has been submitted for that session.
 The first call generates and stores the report; later calls return the saved
 one with the score recalculated from the current answers.
 
-## 5. Quick test with curl
+## 5. Quick test with curl:
 
 ```bash
 SESSION=$(curl -s -X POST http://127.0.0.1:8000/start-interview \
@@ -122,7 +122,7 @@ curl -s -X POST http://127.0.0.1:8000/submit-answer \
 curl -s http://127.0.0.1:8000/interview-report/$SESSION
 ```
 
-## 6. Connecting a frontend
+## 6. Connecting a frontend:
 
 The React files described in the original spec (`InterviewPage.jsx`,
 `CompanySelect.jsx`, `ResultPage.jsx`) aren't included here — this delivers
@@ -140,7 +140,7 @@ the browser for a no-backend hackathon demo. This backend is the version
 that matches the original spec's architecture — swap the demo's fetch calls
 for these three endpoints if you want the demo to run through it.
 
-## 7. Notes on what's verified vs. not
+## 7. Notes on what's verified vs. not:
 
 - The endpoint logic, MongoDB read/writes, and Gemini call/parse paths have
   been reviewed carefully for correctness, but this hasn't been run against
