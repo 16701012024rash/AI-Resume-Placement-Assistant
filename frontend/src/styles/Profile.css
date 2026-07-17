@@ -1,0 +1,40 @@
+.profile-page{
+    min-height:100vh;
+    background:#C9C9EE;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.profile-card{
+    width:420px;
+    background:white;
+    border-radius:25px;
+    padding:40px;
+    text-align:center;
+    box-shadow:0 15px 30px rgba(0,0,0,.08);
+}
+
+.profile-card img{
+    width:150px;
+    border-radius:50%;
+}
+
+.profile-card h1{
+    margin:20px 0;
+    color:#8D7471;
+}
+
+.profile-card p{
+    margin:12px 0;
+}
+
+.profile-card button{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:#9F838C;
+    color:white;
+    cursor:pointer;
+}

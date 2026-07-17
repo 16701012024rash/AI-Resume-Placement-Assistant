@@ -1,0 +1,63 @@
+.resume-page{
+
+height:100vh;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+background:#C9C9EE;
+
+}
+
+.upload-card{
+
+background:white;
+
+padding:50px;
+
+border-radius:25px;
+
+width:500px;
+
+text-align:center;
+
+box-shadow:0 15px 30px rgba(0,0,0,.1);
+
+}
+
+.upload-icon{
+
+font-size:70px;
+
+margin-bottom:20px;
+
+}
+
+.upload-card input{
+
+margin:25px 0;
+
+}
+
+.upload-card button{
+
+background:#9F838C;
+
+color:white;
+
+border:none;
+
+padding:15px 35px;
+
+border-radius:12px;
+
+cursor:pointer;
+
+font-size:16px;
+
+}

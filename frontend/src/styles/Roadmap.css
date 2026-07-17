@@ -1,0 +1,34 @@
+.roadmap-page{
+    min-height:100vh;
+    background:#C9C9EE;
+    padding:50px;
+}
+
+.roadmap-page h1{
+    text-align:center;
+    color:#8D7471;
+    margin-bottom:40px;
+}
+
+.roadmap-container{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:25px;
+}
+
+.roadmap-card{
+    background:white;
+    border-radius:20px;
+    padding:35px;
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.roadmap-card:hover{
+    transform:translateY(-6px);
+}
+
+.roadmap-card h2{
+    color:#9F838C;
+    margin-bottom:15px;
+}
