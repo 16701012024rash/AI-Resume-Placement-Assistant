@@ -4,9 +4,16 @@ from pydantic import BaseModel
 
 from . import config
 from . import gemini
+from . import auth
+from . import resume
+from . import dashboard
 from database import interview_schema as db
 
 app = FastAPI(title="Interview Prep Module")
+
+app.include_router(auth.router, tags=["Authentication"])
+app.include_router(resume.router, tags=["Resume"])
+app.include_router(dashboard.router, tags=["Dashboard"])
 
 app.add_middleware(
     CORSMiddleware,
