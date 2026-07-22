@@ -31,6 +31,46 @@ def _generate_json(prompt: str):
     return json.loads(cleaned)
 
 
+def ask_json(system_prompt: str, user_prompt: str, max_tokens: int = 3000) -> dict:
+    """Generic system+user call that returns parsed JSON. Used by the ported
+    ai-engine agents (resume review, skill gap, placement score, roadmap)."""
+    client = get_client()
+    response = client.models.generate_content(
+        model=config.GEMINI_MODEL,
+        contents=user_prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            response_mime_type="application/json",
+            max_output_tokens=max_tokens,
+        ),
+    )
+    text = response.text or ""
+    cleaned = text.replace("```json", "").replace("```", "").strip()
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError as e:
+        raise ValueError(
+            "Gemini's response was cut off before finishing (likely hit the "
+            f"{max_tokens}-token limit). Try shortening the input, or increase "
+            "max_tokens for this call. Raw response started with: "
+            f"{cleaned[:200]!r}"
+        ) from e
+
+
+def ask_text(system_prompt: str, user_prompt: str, max_tokens: int = 800) -> str:
+    """Generic system+user call that returns plain text. Used by the chat agent."""
+    client = get_client()
+    response = client.models.generate_content(
+        model=config.GEMINI_MODEL,
+        contents=user_prompt,
+        config=types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            max_output_tokens=max_tokens,
+        ),
+    )
+    return (response.text or "").strip()
+
+
 def generate_questions(company: str, role: str, num_questions: int) -> list:
     prompt = prompts.question_generation_prompt(company, role, num_questions)
     result = _generate_json(prompt)

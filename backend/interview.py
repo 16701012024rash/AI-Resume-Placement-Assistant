@@ -7,13 +7,15 @@ from . import gemini
 from . import auth
 from . import resume
 from . import dashboard
+from .ai_engine.router import router as ai_engine_router
 from database import interview_schema as db
 
-app = FastAPI(title="Interview Prep Module")
+app = FastAPI(title="AI Resume + Placement Assistant")
 
 app.include_router(auth.router, tags=["Authentication"])
 app.include_router(resume.router, tags=["Resume"])
 app.include_router(dashboard.router, tags=["Dashboard"])
+app.include_router(ai_engine_router, tags=["AI Engine"])
 
 app.add_middleware(
     CORSMiddleware,

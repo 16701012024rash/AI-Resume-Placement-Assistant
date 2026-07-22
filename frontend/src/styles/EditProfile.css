@@ -45,3 +45,40 @@
 .edit-card button:hover{
     background:#8D7471;
 }
+
+.edit-card button:disabled{
+    opacity:.5;
+    cursor:default;
+}
+
+.edit-card button.ghost{
+    background:transparent;
+    color:#8D7471;
+    border:1px solid #ddd;
+    margin-top:10px;
+}
+
+.edit-card button.ghost:hover{
+    background:#f7f7fb;
+}
+
+.edit-error{
+    font-size:13px;
+    color:#9c3947;
+    background:#fde8ea;
+    border:1px solid #e08a94;
+    padding:8px 12px;
+    border-radius:8px;
+    margin-top:12px;
+}
+
+.edit-saved{
+    font-size:13px;
+    color:#1c5a4c;
+    background:#e1f0ec;
+    border:1px solid #a6d6c6;
+    padding:8px 12px;
+    border-radius:8px;
+    margin-top:12px;
+    text-align:center;
+}

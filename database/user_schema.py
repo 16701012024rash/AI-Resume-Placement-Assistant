@@ -26,9 +26,12 @@ def users_collection():
 class User(BaseModel):
     user_id: str
     name: str
-    email: EmailStr
-    password_hash: str
+    email: Optional[EmailStr] = None
+    password_hash: Optional[str] = None
     college: Optional[str] = None
+    branch: Optional[str] = None
+    skills: Optional[str] = None
+    phone: Optional[str] = None
     target_role: Optional[str] = None
     created_at: datetime
     updated_at: datetime
@@ -67,9 +70,18 @@ async def get_user_by_id(user_id: str) -> Optional[dict]:
     return await users_collection().find_one({"user_id": user_id}, {"_id": 0})
 
 
-async def update_user_profile(user_id: str, updates: dict) -> None:
-    updates["updated_at"] = datetime.now(timezone.utc)
-    await users_collection().update_one(
+async def update_user_profile(user_id: str, updates: dict):
+    """Upsert so this works even before a real login system exists --
+    if this user_id has no signup/login record yet, one is created here.
+    Returns the raw Mongo UpdateResult for diagnostics."""
+    now = datetime.now(timezone.utc)
+    updates["updated_at"] = now
+    result = await users_collection().update_one(
         {"user_id": user_id},
-        {"$set": updates},
+        {
+            "$set": updates,
+            "$setOnInsert": {"user_id": user_id, "created_at": now},
+        },
+        upsert=True,
     )
+    return result

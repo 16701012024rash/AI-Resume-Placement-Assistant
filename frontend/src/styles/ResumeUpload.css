@@ -61,3 +61,52 @@ cursor:pointer;
 font-size:16px;
 
 }
+
+.upload-card button:disabled{
+  opacity:.5;
+  cursor:default;
+}
+
+.filename{
+  font-size:13px;
+  color:#666;
+  margin:-15px 0 15px;
+}
+
+.target-role-label{
+  display:block;
+  text-align:left;
+  font-size:13px;
+  font-weight:600;
+  color:#8D7471;
+  margin:18px 0 6px;
+}
+
+.upload-card select,
+.upload-card textarea{
+  width:100%;
+  font-family:inherit;
+  font-size:14px;
+  padding:10px 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  background:#f7f7fb;
+  color:#333;
+  box-sizing:border-box;
+}
+
+.upload-card textarea{
+  resize:vertical;
+  margin-bottom:10px;
+}
+
+.upload-error{
+  text-align:left;
+  font-size:13px;
+  color:#9c3947;
+  background:#fde8ea;
+  border:1px solid #e08a94;
+  padding:8px 12px;
+  border-radius:8px;
+  margin:10px 0;
+}

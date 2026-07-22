@@ -47,7 +47,8 @@ import {
   FaFileAlt,
   FaChartLine,
   FaUserGraduate,
-  FaUser
+  FaUser,
+  FaMicrophone
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
@@ -93,6 +94,15 @@ function Sidebar() {
         >
           <li>
             <FaUserGraduate /> Roadmap
+          </li>
+        </Link>
+
+        <Link
+          to="/interview"
+          style={{ textDecoration: "none", color: "white" }}
+        >
+          <li>
+            <FaMicrophone /> Mock Interview
           </li>
         </Link>
 

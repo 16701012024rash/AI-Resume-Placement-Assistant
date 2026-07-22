@@ -1,32 +1,37 @@
 """
-Thin wrapper around the Anthropic Claude API.
+Thin wrapper around the Google Gemini API.
 
 Every agent in this service calls `ask_claude_json()` so we only have
-retry / parsing / error-handling logic in ONE place.
+retry / parsing / error-handling logic in ONE place. Function names are
+kept as `ask_claude` / `ask_claude_json` so none of the agent files needed
+to change when this was swapped from Claude to Gemini (same signatures,
+same return shapes) — only this file's internals changed.
 """
 
 import json
 import os
 import re
 
-from anthropic import Anthropic, APIError
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.getenv("ANTHROPIC_API_KEY")
-MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")
+API_KEY = os.getenv("GEMINI_API_KEY")
+MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 if not API_KEY:
     raise RuntimeError(
-        "ANTHROPIC_API_KEY is missing. Copy .env.example to .env and add your key."
+        "GEMINI_API_KEY is missing. Copy .env.example to .env and add your key "
+        "(free key: https://aistudio.google.com/apikey)."
     )
 
-client = Anthropic(api_key=API_KEY)
+client = genai.Client(api_key=API_KEY)
 
 
 def _strip_code_fences(text: str) -> str:
-    """Claude sometimes wraps JSON in ```json ... ``` even when told not to."""
+    """Gemini sometimes wraps JSON in ```json ... ``` even when told not to."""
     text = text.strip()
     text = re.sub(r"^```(?:json)?\s*", "", text)
     text = re.sub(r"\s*```$", "", text)
@@ -36,20 +41,22 @@ def _strip_code_fences(text: str) -> str:
 def ask_claude(system_prompt: str, user_prompt: str, max_tokens: int = 1500) -> str:
     """Plain text call. Used by the chat agent for conversational replies."""
     try:
-        response = client.messages.create(
+        response = client.models.generate_content(
             model=MODEL,
-            max_tokens=max_tokens,
-            system=system_prompt,
-            messages=[{"role": "user", "content": user_prompt}],
+            contents=user_prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                max_output_tokens=max_tokens,
+            ),
         )
-        return response.content[0].text
-    except APIError as e:
-        raise RuntimeError(f"Claude API error: {e}") from e
+        return response.text or ""
+    except Exception as e:
+        raise RuntimeError(f"Gemini API error: {e}") from e
 
 
 def ask_claude_json(system_prompt: str, user_prompt: str, max_tokens: int = 1500) -> dict:
     """
-    Call Claude and force a JSON-only response.
+    Call Gemini and force a JSON-only response.
     Appends a hard instruction to the system prompt so the model
     doesn't add preamble, and safely parses the result.
     """
@@ -72,4 +79,4 @@ def ask_claude_json(system_prompt: str, user_prompt: str, max_tokens: int = 1500
                 return json.loads(match.group(0))
             except json.JSONDecodeError:
                 pass
-        raise ValueError(f"Claude did not return valid JSON. Raw response:\n{raw}")
+        raise ValueError(f"Gemini did not return valid JSON. Raw response:\n{raw}")

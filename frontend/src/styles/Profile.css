@@ -38,3 +38,13 @@
     color:white;
     cursor:pointer;
 }
+
+.profile-card .edit-error{
+    font-size:13px;
+    color:#9c3947;
+    background:#fde8ea;
+    border:1px solid #e08a94;
+    padding:8px 12px;
+    border-radius:8px;
+    margin-top:12px;
+}

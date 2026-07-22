@@ -1,35 +1,48 @@
-import "../styles/Profile.css";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiCall } from "../lib/api";
+import { getLocalUserId } from "../lib/localUser";
+import "../styles/Profile.css";
+
 function Profile() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    apiCall(`/profile/${getLocalUserId()}`, { method: "GET" })
+      .then(setUser)
+      .catch((err) => setError(err.message || "Couldn't load your profile."));
+  }, []);
+
+  const resumeAnalysis = JSON.parse(localStorage.getItem("resumeAnalysis") || "null");
+
   return (
     <div className="profile-page">
-
       <div className="profile-card">
-
         <img
-          src="https://ui-avatars.com/api/?name=Student&background=9F838C&color=fff&size=200"
+          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "Student")}&background=9F838C&color=fff&size=200`}
           alt="profile"
         />
 
         <h1>Student Profile</h1>
 
-        <p><b>Name:</b> Your Name</p>
+        {error && <p className="edit-error">{error}</p>}
 
-        <p><b>College:</b> IGDTUW</p>
+        {user && (
+          <>
+            <p><b>Name:</b> {user.name || "Not set"}</p>
+            <p><b>College:</b> {user.college || "Not set"}</p>
+            <p><b>Branch:</b> {user.branch || "Not set"}</p>
+            <p><b>Skills:</b> {user.skills || "Not set"}</p>
+            {resumeAnalysis && (
+              <p><b>Resume Score:</b> {resumeAnalysis.overall_score}%</p>
+            )}
+          </>
+        )}
 
-        <p><b>Branch:</b> CSE-AI</p>
-
-        <p><b>Resume Score:</b> 82%</p>
-
-        <p><b>ATS Score:</b> 91%</p>
-
-        <button onClick={() => navigate("/edit-profile")}>
-  Edit Profile
-</button>
-
+        <button onClick={() => navigate("/edit-profile")}>Edit Profile</button>
       </div>
-
     </div>
   );
 }

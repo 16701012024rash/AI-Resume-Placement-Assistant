@@ -47,8 +47,21 @@ class LoginRequest(BaseModel):
 class UserPublic(BaseModel):
     user_id: str
     name: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
     college: Optional[str] = None
+    branch: Optional[str] = None
+    skills: Optional[str] = None
+    phone: Optional[str] = None
+    target_role: Optional[str] = None
+
+
+class ProfileUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    college: Optional[str] = None
+    branch: Optional[str] = None
+    skills: Optional[str] = None
+    phone: Optional[str] = None
     target_role: Optional[str] = None
 
 
@@ -143,3 +156,38 @@ async def login(payload: LoginRequest):
         },
         "access_token": token,
     }
+
+
+@router.get("/profile/{user_id}", response_model=UserPublic)
+async def get_profile(user_id: str):
+    user = await db.get_user_by_id(user_id)
+    if user is None:
+        # No login system exists yet -- treat a missing profile as "not
+        # created yet" rather than an error, so the Profile page can show
+        # empty fields instead of crashing.
+        return {"user_id": user_id, "name": ""}
+    return user
+
+
+@router.put("/profile/{user_id}", response_model=UserPublic)
+async def update_profile(user_id: str, payload: ProfileUpdateRequest):
+    updates = payload.model_dump(exclude_unset=True, exclude_none=True)
+    write_result = None
+    try:
+        write_result = await db.update_user_profile(user_id, updates)
+        user = await db.get_user_by_id(user_id)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not update profile: {exc}")
+    if user is None:
+        raise HTTPException(
+            status_code=500,
+            detail=(
+                "Profile write result: "
+                f"acknowledged={getattr(write_result, 'acknowledged', None)}, "
+                f"matched={getattr(write_result, 'matched_count', None)}, "
+                f"modified={getattr(write_result, 'modified_count', None)}, "
+                f"upserted_id={getattr(write_result, 'upserted_id', None)}. "
+                f"But re-fetching user_id={user_id!r} returned nothing."
+            ),
+        )
+    return user
