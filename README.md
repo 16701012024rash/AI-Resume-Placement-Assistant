@@ -47,15 +47,25 @@ build; it is not a secret.
 ### MongoDB Atlas checklist
 
 - Create a database user with a strong password and only the database
-  permissions the app needs.
+  permissions the app needs. The application reads and writes user, resume,
+  and interview records, so grant that user `readWrite` on `placement_assistant`.
 - Put the Atlas connection string in Render's `MONGO_URI` secret, URL-encoding
-  special characters in the username or password.
+  special characters in the username or password. Atlas SRV URIs use TLS by
+  default; if no `authSource` query option is present, the backend uses
+  `admin`, which is the default authentication database for Atlas database users.
 - Allow network access from Render in Atlas. Render free services do not have a
   fixed outbound IP; if an IP allowlist is required, use a paid Render plan with
-  fixed egress or allow public network access in Atlas while protecting it with
-  the database user's credentials and least-privilege permissions.
+  fixed egress or, if you accept the exposure, add `0.0.0.0/0` to Atlas's IP
+  access list while protecting the cluster with strong credentials and
+  least-privilege permissions.
 - Visit `https://ai-resume-placement-api.onrender.com/health`; a healthy
   response includes `"database":"ok"`.
+
+The backend logs only the MongoDB URI source and scheme, selected database,
+TLS status, timeout, and a redacted failure category. It never logs the URI,
+password, API key, or JWT secret. For `server_selection_timeout`, check Atlas
+Network Access, outbound IP access, DNS, and TLS; for authentication or
+authorization categories, check the database user's credentials and role.
 
 Do not put Gemini or MongoDB credentials in frontend variables or commit them
 to the repository. Gemini API usage can be subject to account quotas and

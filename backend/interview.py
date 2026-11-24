@@ -1,7 +1,14 @@
+import logging
+from typing import Literal
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pymongo.errors import PyMongoError
-from typing import Literal
+from pymongo.errors import (
+    ConfigurationError,
+    OperationFailure,
+    PyMongoError,
+    ServerSelectionTimeoutError,
+)
 
 from pydantic import BaseModel, Field
 
@@ -14,6 +21,7 @@ from .ai_engine.router import router as ai_engine_router
 from database import interview_schema as db
 
 app = FastAPI(title="AI Resume + Placement Assistant")
+logger = logging.getLogger(__name__)
 
 app.include_router(auth.router, tags=["Authentication"])
 app.include_router(resume.router, tags=["Resume"])
@@ -66,12 +74,47 @@ class InterviewReportResponse(BaseModel):
 
 # --- Routes ------------------------------------------------------------------
 
+@app.on_event("startup")
+async def log_mongodb_configuration():
+    logger.info(
+        "MongoDB configuration: uri_source=%s uri_scheme=%s database=%s tls=%s "
+        "auth_source_fallback=%s server_selection_timeout_ms=%s",
+        "environment" if config.MONGO_URI_FROM_ENV else "local_default",
+        config.MONGO_URI_SCHEME or "invalid",
+        config.MONGO_DB_NAME,
+        config.MONGO_TLS_ENABLED,
+        bool(config.MONGO_AUTH_SOURCE_OVERRIDE),
+        config.MONGO_SERVER_SELECTION_TIMEOUT_MS,
+    )
+
+
 @app.get("/health")
 async def health():
     try:
         await db.get_db().command("ping")
     except PyMongoError as exc:
-        raise HTTPException(status_code=503, detail="MongoDB is unavailable") from exc
+        if isinstance(exc, OperationFailure) and exc.code == 18:
+            category = "authentication_failed"
+            detail = "MongoDB authentication failed; check the Atlas database user, password encoding, and authSource."
+        elif isinstance(exc, OperationFailure) and exc.code == 13:
+            category = "authorization_failed"
+            detail = f"MongoDB access denied; grant the database user readWrite on {config.MONGO_DB_NAME}."
+        elif isinstance(exc, ServerSelectionTimeoutError):
+            category = "server_selection_timeout"
+            detail = "MongoDB servers were not reachable; check Atlas Network Access, the cluster URI/DNS, and TLS."
+        elif isinstance(exc, ConfigurationError):
+            category = "invalid_connection_configuration"
+            detail = "MongoDB connection configuration is invalid; check the URI scheme and options."
+        else:
+            category = "mongo_driver_error"
+            detail = "MongoDB health check failed; inspect the redacted backend diagnostic log."
+
+        logger.error(
+            "MongoDB health ping failed: category=%s exception_type=%s",
+            category,
+            type(exc).__name__,
+        )
+        raise HTTPException(status_code=503, detail=detail) from None
     return {"status": "ok", "database": "ok"}
 
 

@@ -1,4 +1,5 @@
 import os
+from urllib.parse import parse_qs, urlsplit
 
 from dotenv import load_dotenv
 
@@ -30,10 +31,42 @@ OLLAMA_KEEP_ALIVE = os.getenv("OLLAMA_KEEP_ALIVE", "15m")
 OLLAMA_MAX_OUTPUT_TOKENS = int(os.getenv("OLLAMA_MAX_OUTPUT_TOKENS", "1024"))
 OLLAMA_CONTEXT_TOKENS = int(os.getenv("OLLAMA_CONTEXT_TOKENS", "2048"))
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
+MONGO_URI_FROM_ENV = os.getenv("MONGO_URI")
+MONGO_URI = MONGO_URI_FROM_ENV or "mongodb://127.0.0.1:27017"
 MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "placement_assistant")
 MONGO_SERVER_SELECTION_TIMEOUT_MS = int(os.getenv("MONGO_SERVER_SELECTION_TIMEOUT_MS", "10000"))
 MONGO_CONNECT_TIMEOUT_MS = int(os.getenv("MONGO_CONNECT_TIMEOUT_MS", "10000"))
+try:
+    _mongo_uri_parts = urlsplit(MONGO_URI)
+    _mongo_query_options = {
+        key.lower(): values
+        for key, values in parse_qs(_mongo_uri_parts.query).items()
+    }
+except ValueError:
+    _mongo_uri_parts = None
+    _mongo_query_options = {}
+MONGO_URI_SCHEME = _mongo_uri_parts.scheme.lower() if _mongo_uri_parts else ""
+_tls_option = (
+    _mongo_query_options.get("tls")
+    or _mongo_query_options.get("ssl")
+    or [None]
+)[0]
+MONGO_TLS_ENABLED = (
+    _tls_option.lower() not in {"false", "0", "no"}
+    if _tls_option is not None
+    else MONGO_URI_SCHEME == "mongodb+srv"
+)
+MONGO_AUTH_SOURCE_OVERRIDE = (
+    "admin"
+    if MONGO_URI_SCHEME == "mongodb+srv" and "authsource" not in _mongo_query_options
+    else None
+)
+MONGO_CLIENT_OPTIONS = {
+    "serverSelectionTimeoutMS": MONGO_SERVER_SELECTION_TIMEOUT_MS,
+    "connectTimeoutMS": MONGO_CONNECT_TIMEOUT_MS,
+}
+if MONGO_AUTH_SOURCE_OVERRIDE:
+    MONGO_CLIENT_OPTIONS["authSource"] = MONGO_AUTH_SOURCE_OVERRIDE
 
 CORS_ORIGINS = [
     origin.strip().rstrip("/")
