@@ -5,7 +5,8 @@
 The repository includes [`render.yaml`](./render.yaml), which defines a Render
 Python web service for FastAPI and a React static site. Production uses Gemini
 for AI and MongoDB Atlas for persistence; local development can continue to use
-Ollama and local MongoDB.
+Ollama and local MongoDB. The backend runtime is pinned to Python 3.12.10 in
+both `render.yaml` and the root `.python-version` file.
 
 1. Push this repository to GitHub.
 2. In Render, choose **New → Blueprint** and select the repository containing

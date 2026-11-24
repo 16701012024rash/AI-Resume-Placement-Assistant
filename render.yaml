@@ -9,7 +9,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.9
+        value: "3.12.10"
       - key: APP_ENV
         value: production
       - key: AI_PROVIDER
@@ -32,8 +32,9 @@ services:
   - type: web
     name: ai-resume-placement-assistant
     runtime: static
-    buildCommand: cd frontend && npm ci && npm run build
-    staticPublishPath: frontend/build
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: build
     envVars:
       - key: REACT_APP_API_BASE
         value: https://ai-resume-placement-api.onrender.com
