@@ -1,22 +1,22 @@
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
 import DashboardCard from "../components/DashboardCard";
 import "../styles/Dashboard.css";
 
 function Dashboard({ setPage }) {
   return (
-    <>
-      <Navbar />
+    <div className="dashboard-page">
+      <header className="dashboard-heading">
+        <div>
+          <p className="eyebrow">Placement workspace</p>
+          <h1>Good morning, Student</h1>
+          <p>Here is where your career preparation stands today.</p>
+        </div>
+        <button className="primary-action" onClick={() => window.location.href="/resume"}>
+          Analyze resume
+        </button>
+      </header>
 
-      <div className="main">
-        <Sidebar setPage={setPage} />
-
-        <div className="content">
-          <h1>Welcome Back 👋</h1>
-          <p>Let's prepare for your dream placement.</p>
-
-          <div className="cards">
-            <DashboardCard
+      <section className="cards" aria-label="Preparation overview">
+        <DashboardCard
     title="Resume Score"
     value="82%"
     status="Excellent"
@@ -43,7 +43,7 @@ function Dashboard({ setPage }) {
     status="Completed"
     growth="This Month"
   />
-          </div>
+      </section>
           <div className="bottom-section">
 
   <div className="upload-box">
@@ -109,9 +109,7 @@ function Dashboard({ setPage }) {
   </div>
 
 </div>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
 

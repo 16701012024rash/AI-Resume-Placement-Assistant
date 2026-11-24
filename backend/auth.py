@@ -14,12 +14,9 @@ router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# TODO: Add JWT_SECRET in config.py (e.g. JWT_SECRET = os.getenv("JWT_SECRET", ""))
-# TODO: Add JWT_ALGORITHM in config.py (default "HS256")
-# TODO: Add JWT_EXPIRE_MINUTES in config.py (default 1440)
-JWT_SECRET = getattr(config, "JWT_SECRET", "dev-insecure-secret-change-me")
-JWT_ALGORITHM = getattr(config, "JWT_ALGORITHM", "HS256")
-JWT_EXPIRE_MINUTES = getattr(config, "JWT_EXPIRE_MINUTES", 1440)
+JWT_SECRET = config.JWT_SECRET
+JWT_ALGORITHM = config.JWT_ALGORITHM
+JWT_EXPIRE_MINUTES = config.JWT_EXPIRE_MINUTES
 
 
 # --- Request / response models ---------------------------------------------

@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: ai-resume-placement-api
+    runtime: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.interview:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: APP_ENV
+        value: production
+      - key: AI_PROVIDER
+        value: gemini
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: MONGO_DB_NAME
+        value: placement_assistant
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://ai-resume-placement-assistant.onrender.com
+      - key: NUM_QUESTIONS
+        value: "6"
+
+  - type: web
+    name: ai-resume-placement-assistant
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_BASE
+        value: https://ai-resume-placement-api.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

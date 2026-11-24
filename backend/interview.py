@@ -1,6 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pymongo.errors import PyMongoError
+from typing import Literal
+
+from pydantic import BaseModel, Field
 
 from . import config
 from . import gemini
@@ -19,7 +22,8 @@ app.include_router(ai_engine_router, tags=["AI Engine"])
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=config.CORS_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -30,6 +34,8 @@ app.add_middleware(
 class StartInterviewRequest(BaseModel):
     company: str
     role: str
+    focus: Literal["Balanced", "Technical deep dive", "Behavioral + project"] = "Balanced"
+    difficulty: Literal["Entry level", "Intermediate"] = "Entry level"
 
 
 class StartInterviewResponse(BaseModel):
@@ -40,10 +46,11 @@ class StartInterviewResponse(BaseModel):
 class SubmitAnswerRequest(BaseModel):
     session_id: str
     question: str
-    answer: str
+    answer: str = Field(..., min_length=1, max_length=4000)
 
 
 class SubmitAnswerResponse(BaseModel):
+    accepted: bool
     score: int
     feedback: str
     strength: str
@@ -61,13 +68,23 @@ class InterviewReportResponse(BaseModel):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    try:
+        await db.get_db().command("ping")
+    except PyMongoError as exc:
+        raise HTTPException(status_code=503, detail="MongoDB is unavailable") from exc
+    return {"status": "ok", "database": "ok"}
 
 
 @app.post("/start-interview", response_model=StartInterviewResponse)
 async def start_interview(payload: StartInterviewRequest):
     try:
-        questions = gemini.generate_questions(payload.company, payload.role, config.NUM_QUESTIONS)
+        questions = gemini.generate_questions(
+            payload.company,
+            payload.role,
+            config.NUM_QUESTIONS,
+            payload.focus,
+            payload.difficulty,
+        )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Could not generate questions: {exc}")
 
@@ -82,7 +99,9 @@ async def submit_answer(payload: SubmitAnswerRequest):
         raise HTTPException(status_code=404, detail="Interview session not found")
 
     matching = next((q for q in session["questions"] if q["question"] == payload.question), None)
-    question_type = matching["type"] if matching else "General"
+    if matching is None:
+        raise HTTPException(status_code=400, detail="This question does not belong to the interview session.")
+    question_type = matching["type"]
 
     try:
         result = gemini.evaluate_answer(
@@ -90,6 +109,9 @@ async def submit_answer(payload: SubmitAnswerRequest):
         )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Could not evaluate answer: {exc}")
+
+    if not result["accepted"]:
+        return result
 
     await db.add_answer(
         payload.session_id,

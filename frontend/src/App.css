@@ -37,12 +37,149 @@
   }
 } */
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  background: #f4f6fb;
 }
 
-body{
-  font-family:Arial, Helvetica, sans-serif;
+.app-workspace {
+  min-width: 0;
+  min-height: 100vh;
+}
+
+.app-content {
+  min-height: calc(100vh - 72px);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 18px 20px;
+  background: #111827;
+  border-right: 1px solid rgba(255,255,255,.06);
+  z-index: 20;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-family: Manrope, sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  padding: 0 10px 28px;
+}
+
+.brand > span:last-child span { color: #818cf8; }
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(99,102,241,.32);
+}
+
+.sidebar-label {
+  padding: 0 12px 9px;
+  color: #7e8799;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 5px; }
+
+.sidebar-link {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-radius: 10px;
+  color: #aeb7c8;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: .18s ease;
+}
+
+.sidebar-link svg { width: 17px; height: 17px; }
+.sidebar-link:hover { color: #fff; background: rgba(255,255,255,.055); }
+.sidebar-link.active { color: #fff; background: #282f45; box-shadow: inset 3px 0 #818cf8; }
+
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  color: #dfe4ec;
+}
+.sidebar-footer-dot { width: 8px; height: 8px; border-radius: 50%; background: #34d399; box-shadow: 0 0 0 4px rgba(52,211,153,.12); }
+.sidebar-footer div { display: flex; flex-direction: column; }
+.sidebar-footer strong { font-size: 12px; }
+.sidebar-footer small { color: #8791a3; margin-top: 2px; }
+
+.navbar {
+  position: sticky;
+  top: 0;
+  height: 72px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  background: rgba(255,255,255,.94);
+  border-bottom: 1px solid #e8ebf2;
+  backdrop-filter: blur(12px);
+}
+
+.navbar-search {
+  color: #7b8498;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.navbar-actions { display: flex; align-items: center; gap: 12px; }
+.icon-button { width: 40px; height: 40px; border: 1px solid #e7eaf1; border-radius: 10px; background: #fff; color: #697188; display: grid; place-items: center; cursor: pointer; }
+.profile { display: flex; align-items: center; gap: 9px; color: #253044; text-decoration: none; }
+.profile-avatar { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; background: #eef0ff; color: #5559c9; font-weight: 800; }
+.profile-copy { display: flex; flex-direction: column; min-width: 72px; }
+.profile-copy strong { font-size: 13px; }
+.profile-copy small { color: #98a0b2; margin-top: 1px; }
+
+@media (max-width: 900px) {
+  .app-shell { grid-template-columns: 76px minmax(0,1fr); }
+  .sidebar { padding-inline: 12px; }
+  .brand { padding-inline: 7px; }
+  .brand > span:last-child, .sidebar-label, .sidebar-link span, .sidebar-footer div { display: none; }
+  .sidebar-link { justify-content: center; padding: 0; }
+  .sidebar-footer { justify-content: center; padding: 12px 0; }
+  .navbar { padding-inline: 24px; }
+}
+
+@media (max-width: 600px) {
+  .app-shell { display: block; padding-bottom: 68px; }
+  .sidebar { position: fixed; top: auto; bottom: 0; width: 100%; height: 68px; flex-direction: row; align-items: center; padding: 8px; border-right: 0; border-top: 1px solid rgba(255,255,255,.08); }
+  .brand, .sidebar-label, .sidebar-footer { display: none; }
+  .sidebar-nav { width: 100%; display: grid; grid-template-columns: repeat(6,1fr); gap: 2px; }
+  .sidebar-link { height: 52px; }
+  .navbar { height: 64px; padding: 0 16px; }
+  .navbar-search { display: none; }
+  .app-content { min-height: calc(100vh - 64px); }
+  .profile-copy { display: none; }
 }

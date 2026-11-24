@@ -42,82 +42,39 @@
 
 // export default Sidebar;
 
-import {
-  FaHome,
-  FaFileAlt,
-  FaChartLine,
-  FaUserGraduate,
-  FaUser,
-  FaMicrophone
-} from "react-icons/fa";
+import { FaHome, FaFileAlt, FaChartLine, FaUserGraduate, FaUser, FaMicrophone } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
-import { Link } from "react-router-dom";
+const navItems = [
+  { to: "/", label: "Overview", icon: FaHome },
+  { to: "/resume", label: "Resume", icon: FaFileAlt },
+  { to: "/analysis", label: "Analysis", icon: FaChartLine },
+  { to: "/roadmap", label: "Roadmap", icon: FaUserGraduate },
+  { to: "/interview", label: "Mock interview", icon: FaMicrophone },
+  { to: "/profile", label: "Profile", icon: FaUser },
+];
 
 function Sidebar() {
   return (
-    <div className="sidebar">
-
-      <h2>MENU</h2>
-
-      <ul>
-
-        <Link
-          to="/"
-          style={{ textDecoration: "none", color: "white" }}
-        >
-          <li>
-            <FaHome /> Dashboard
-          </li>
-        </Link>
-
-        <Link
-          to="/resume"
-          style={{ textDecoration: "none", color: "white" }}
-        >
-          <li>
-            <FaFileAlt /> Resume
-          </li>
-        </Link>
-
-        <Link
-          to="/analysis"
-          style={{ textDecoration: "none", color: "white" }}
-        >
-          <li>
-            <FaChartLine /> Analysis
-          </li>
-        </Link>
-
-        <Link
-          to="/roadmap"
-          style={{ textDecoration: "none", color: "white" }}
-        >
-          <li>
-            <FaUserGraduate /> Roadmap
-          </li>
-        </Link>
-
-        <Link
-          to="/interview"
-          style={{ textDecoration: "none", color: "white" }}
-        >
-          <li>
-            <FaMicrophone /> Mock Interview
-          </li>
-        </Link>
-
-        <Link
-          to="/profile"
-          style={{ textDecoration: "none", color: "white" }}
-        >
-          <li>
-            <FaUser /> Profile
-          </li>
-        </Link>
-
-      </ul>
-
-    </div>
+    <aside className="sidebar">
+      <NavLink to="/" className="brand" aria-label="Placement AI home">
+        <span className="brand-mark">P</span>
+        <span>Placement<span>AI</span></span>
+      </NavLink>
+      <div className="sidebar-label">Workspace</div>
+      <nav className="sidebar-nav">
+        {navItems.map(({ to, label, icon: Icon }) => (
+          <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => `sidebar-link${isActive ? " active" : ""}`}>
+            <Icon />
+            <span>{label}</span>
+          </NavLink>
+        ))}
+      </nav>
+      <div className="sidebar-footer">
+        <span className="sidebar-footer-dot" />
+        <div><strong>Preparation mode</strong><small>Keep going</small></div>
+      </div>
+    </aside>
   );
 }
 

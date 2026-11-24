@@ -49,16 +49,26 @@ class PlacementScoreResponse(BaseModel):
 # ---------- Roadmap Generation ----------
 class RoadmapRequest(BaseModel):
     missing_skills: List[str]
+    current_skills: List[str] = Field(default_factory=list)
+    priority_order: List[str] = Field(default_factory=list)
     target_role: str
     weeks: int = Field(4, ge=1, le=12)
     hours_per_week: int = Field(10, ge=1, le=60)
 
 
+class RoadmapResource(BaseModel):
+    title: str
+    url: str
+    description: str
+
+
 class WeekPlan(BaseModel):
     week: int
+    objective: str
     focus_skills: List[str]
     tasks: List[str]
-    resources: List[str]
+    hours_per_week: int
+    resources: List[RoadmapResource]
 
 
 class RoadmapResponse(BaseModel):

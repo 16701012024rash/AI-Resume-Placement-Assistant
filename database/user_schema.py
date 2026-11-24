@@ -13,7 +13,11 @@ _mongo_client: Optional[AsyncIOMotorClient] = None
 def get_db():
     global _mongo_client
     if _mongo_client is None:
-        _mongo_client = AsyncIOMotorClient(config.MONGO_URI)
+        _mongo_client = AsyncIOMotorClient(
+            config.MONGO_URI,
+            serverSelectionTimeoutMS=config.MONGO_SERVER_SELECTION_TIMEOUT_MS,
+            connectTimeoutMS=config.MONGO_CONNECT_TIMEOUT_MS,
+        )
     return _mongo_client[config.MONGO_DB_NAME]
 
 

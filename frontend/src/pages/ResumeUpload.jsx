@@ -68,8 +68,9 @@ function ResumeUpload() {
       navigate("/analysis");
     } catch (err) {
       setError(err.message || "Couldn't analyze this resume. Try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -106,6 +107,11 @@ function ResumeUpload() {
         <button onClick={handleAnalyze} disabled={loading}>
           {loading ? "Analyzing..." : "Analyze Resume"}
         </button>
+        {loading && (
+          <p className="loading-hint" aria-live="polite">
+            The local AI is reviewing your resume. Its first response can take longer while the model loads.
+          </p>
+        )}
       </div>
     </div>
   );

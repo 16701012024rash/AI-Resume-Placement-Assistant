@@ -1,112 +1,12 @@
-.resume-page{
-
-height:100vh;
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:center;
-
-align-items:center;
-
-background:#C9C9EE;
-
-}
-
-.upload-card{
-
-background:white;
-
-padding:50px;
-
-border-radius:25px;
-
-width:500px;
-
-text-align:center;
-
-box-shadow:0 15px 30px rgba(0,0,0,.1);
-
-}
-
-.upload-icon{
-
-font-size:70px;
-
-margin-bottom:20px;
-
-}
-
-.upload-card input{
-
-margin:25px 0;
-
-}
-
-.upload-card button{
-
-background:#9F838C;
-
-color:white;
-
-border:none;
-
-padding:15px 35px;
-
-border-radius:12px;
-
-cursor:pointer;
-
-font-size:16px;
-
-}
-
-.upload-card button:disabled{
-  opacity:.5;
-  cursor:default;
-}
-
-.filename{
-  font-size:13px;
-  color:#666;
-  margin:-15px 0 15px;
-}
-
-.target-role-label{
-  display:block;
-  text-align:left;
-  font-size:13px;
-  font-weight:600;
-  color:#8D7471;
-  margin:18px 0 6px;
-}
-
-.upload-card select,
-.upload-card textarea{
-  width:100%;
-  font-family:inherit;
-  font-size:14px;
-  padding:10px 12px;
-  border:1px solid #ddd;
-  border-radius:8px;
-  background:#f7f7fb;
-  color:#333;
-  box-sizing:border-box;
-}
-
-.upload-card textarea{
-  resize:vertical;
-  margin-bottom:10px;
-}
-
-.upload-error{
-  text-align:left;
-  font-size:13px;
-  color:#9c3947;
-  background:#fde8ea;
-  border:1px solid #e08a94;
-  padding:8px 12px;
-  border-radius:8px;
-  margin:10px 0;
-}
+.resume-page{min-height:calc(100vh - 72px);padding:34px 36px 48px}
+.resume-page>h1{margin:0;font-family:Manrope,sans-serif;font-size:28px;color:#172033}.resume-page>p{margin:7px 0 24px;color:#81899a;font-size:14px}
+.upload-card{max-width:760px;margin:0 auto;padding:30px;background:#fff;border:1px solid #e8ebf2;border-radius:16px;box-shadow:0 8px 28px rgba(34,43,78,.06);text-align:left}
+.upload-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:13px;background:#eef0ff;color:#6268df;font-size:24px;margin-bottom:14px}
+.upload-card h2{margin:0;font-size:18px}.upload-card>p{color:#7b8498;font-size:13px}
+.upload-card input[type=file]{width:100%;margin:18px 0 4px;padding:18px;border:1px dashed #bac1d1;border-radius:12px;background:#fafbfe}
+.filename{margin:7px 0 0!important;color:#6268df!important}
+.target-role-label{display:block;margin:18px 0 7px;color:#596176;font-size:12px;font-weight:800}
+.upload-card select,.upload-card textarea{width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid #dde2ec;border-radius:9px;background:#fff;color:#293248;font-family:inherit;font-size:14px}.upload-card textarea{resize:vertical;min-height:150px}
+.upload-card button{height:44px;margin-top:16px;padding:0 18px;border:0;border-radius:9px;background:#5b61df;color:#fff;font-weight:800;cursor:pointer}.upload-card button:disabled{opacity:.55}
+.loading-hint{margin:10px 0 0!important;color:#687187!important;font-size:12px!important}
+.upload-error{margin:14px 0 0;padding:10px 12px;border-radius:8px;background:#fff1f2;color:#a33a48;font-size:13px}

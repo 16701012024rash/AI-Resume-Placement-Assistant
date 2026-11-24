@@ -1,9 +1,11 @@
-// Shared fetch helper for talking to the FastAPI backend.
-// Override the backend URL by creating frontend/.env with:
-// REACT_APP_API_BASE=http://127.0.0.1:8000
-export const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+// Set REACT_APP_API_BASE in frontend/.env locally and in the Render build environment.
+export const API_BASE = (process.env.REACT_APP_API_BASE || "").replace(/\/+$/, "");
 
 export async function apiCall(path, options = {}) {
+  if (!API_BASE) {
+    throw new Error("REACT_APP_API_BASE is not configured for this frontend build.");
+  }
+
   let res;
   try {
     res = await fetch(API_BASE + path, {

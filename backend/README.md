@@ -47,6 +47,17 @@ Provides APIs to retrieve user information including:
 
 ---
 
+### Career Roadmap
+
+The roadmap API creates a role-specific weekly study plan based on the
+student's current skills, skill gaps, timeline, and weekly study hours. Each
+week includes a measurable objective, checkable tasks, and curated free
+learning resources. The frontend saves roadmap progress in the current
+browser so completed tasks and the overall progress bar remain available after
+refreshing the page.
+
+---
+
 ### Database
 
 MongoDB is used as the primary database.
@@ -160,15 +171,25 @@ pip install -r requirements.txt
 
 ## Environment Variables
 
-Create a `.env` file:
+For local development, create a repository-root `.env` file:
 
+```dotenv
+APP_ENV=development
+AI_PROVIDER=ollama
+OLLAMA_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=llama3.2:1b
+MONGO_URI=mongodb://127.0.0.1:27017
+MONGO_DB_NAME=placement_assistant
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+JWT_SECRET=dev-insecure-secret-change-me
 ```
 
-MONGO_URI=your\_mongodb\_connection
-GEMINI\_API\_KEY=your\_gemini\_key
-JWT\_SECRET=your\_secret
-
-```
+For Render, set `APP_ENV=production`, `AI_PROVIDER=gemini`, `GEMINI_API_KEY`,
+`MONGO_URI` (MongoDB Atlas SRV connection string), `MONGO_DB_NAME`,
+`JWT_SECRET`, and `CORS_ORIGINS` in the API service environment. See the
+repository [Render deployment guide](../README.md#deploy-to-render) for the
+frontend URL and the full variable list. The `/health` endpoint pings MongoDB
+and returns HTTP 503 when the database is unreachable.
 
 ---
 
@@ -181,17 +202,13 @@ uvicorn backend.interview:app --reload
 Server will run at:
 
 ```
-
-http://127.0.0.1:8000
-
+http://127.0.0.1:8002
 ```
 
 Swagger Documentation:
 
 ```
-
-http://127.0.0.1:8000/docs
-
+http://127.0.0.1:8002/docs
 ```
 
 ---
@@ -213,7 +230,6 @@ This module integrates with:
 - Resume Analysis Integration
 - AI Skill Gap Integration
 - Placement Readiness Tracking
-- Learning Roadmap Integration
 - Analytics Dashboard
 
 ---
